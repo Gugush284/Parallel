@@ -11,6 +11,6 @@ run:
 
 .PHONY: clean
 clean:
-	rm -rf *.o ./build
+	git clean -dfx
 
 .DEFAULT_GOAL := build
