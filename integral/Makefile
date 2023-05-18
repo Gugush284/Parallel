@@ -1,8 +1,13 @@
 .PHONY: build
 build:
 	gcc -Wall -lm -c ./src/*.c
-	mkdir -p ./build
-	gcc -Wall -lm -o ./build/task *.o
+	gcc -Wall -lm -o main *.o
+
+.PHONY: run
+run:
+	gcc -Wall -lm -c ./src/*.c
+	gcc -Wall -lm -o main *.o
+	main
 
 .PHONY: clean
 clean:

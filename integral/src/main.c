@@ -1,74 +1,40 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <pthread.h>
-#include <math.h>
-#include <time.h>
+#include "main.h"
 
-typedef struct {
-    int tid;
-    double a;
-    double b;
+extern double fsin(double x);
+extern void* thr_func(void* arg);
+
+int main()
+{
     double summ;
+    pthread_t thr[num_thr];
+    int rc;
+    thread_data_t thr_data[num_thr];
 
-} thread_data_t;
-
-double eps;
-
-double f(double x)
-{
-    return cos(1/x);
-}
-
-void* thr_func(void* arg)
-{
-    double x, h;
-    thread_data_t *data = (thread_data_t *) arg;
-    data->summ = 0;
-
-    h = sqrt(eps*4*data->a*data->a*data->a/10/(data->b-data->a));
-    x = data->a;
-    while(x < data->b - h)
-    {
-        data->summ += (f(x) + f(x+h))*h/2;
-        x += h;
-    }
-    data->summ += (f(x) + f(data->b))*(data->b-x)/2;
-    pthread_exit(NULL);
-}
-
-
-int main(int argc, char *argv[])
-{
-    int NUM_THREADS;
-    NUM_THREADS = atoi(argv[1]);
-    time(0);
-    clock_t begin = clock();
-    double summ;
-    double a = 0.01;
-    double b = 5;
-    eps = strtod(argv[2], &(argv[2]));
-    pthread_t thr[NUM_THREADS];
-    int i, rc;
-    thread_data_t thr_data[NUM_THREADS];
-    for (i = 0; i < NUM_THREADS; i++)
+    for (int i = 0; i < num_thr; i++)
     {
         thr_data[i].tid = i;
-        thr_data[i].a = a + (b-a)*i/NUM_THREADS;
-        thr_data[i].b = a + (b-a)*(i+1)/NUM_THREADS;
+        thr_data[i].start = start + (end-start)*i/num_thr;
+        thr_data[i].end = start + (end-start)*(i+1)/num_thr;
+        thr_data[i].eps = eps * (i + 1);
+
         rc = pthread_create(&thr[i], NULL, thr_func, &thr_data[i]);
+
         if (rc)
         {
             fprintf(stderr, "error:pthread_create, rc:%d\n", rc);
             return EXIT_FAILURE;
         }
     }
-    for (i = 0; i < NUM_THREADS; i++)
+
+    for (int i = 0; i < num_thr; i++)
         pthread_join(thr[i], NULL);
-    for (i = 0; i < NUM_THREADS; i++)
+
+    for (int i = 0; i < num_thr; i++)
         summ += thr_data[i].summ;
-    time(0);
-    clock_t end = clock();
-    printf("%le %f %f\n", summ, (double)(end - begin) / CLOCKS_PER_SEC, 5.12/((double)(end - begin)*NUM_THREADS / CLOCKS_PER_SEC));
+    printf("%le\n", summ);
 
     return 0;
 }
