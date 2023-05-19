@@ -15,6 +15,7 @@ int main()
     taskQueue queue; // объявление очереди задач
     queue.count = 0; // начальное значение счетчика задач
     thr_struct t[num_thr]; // объяление структуры для передачи в потоки
+    int rc; // параметр ошибки
 
     // Деление отрезка интегрирования на более мелкие, задание переменной шага интегрирования,
     // добавление задачи в очередь задач
@@ -25,7 +26,12 @@ int main()
     }
 
     // Инициализация мьютекса, блокирование потоков до тех пор, пока все не будут готовы
-    pthread_mutex_init(&queue.lock, NULL);
+    rc = pthread_mutex_init(&queue.lock, NULL);
+    if (rc)
+    {
+        fprintf(stderr, "error:mutex_init, rc:%d\n", rc);
+        return EXIT_FAILURE;
+    }
     pthread_mutex_lock(&(queue.lock));
 
     // Запуск потоков
@@ -33,7 +39,7 @@ int main()
     {
         t[i].id = i; // присвоение номера потока
         t[i].queue = &queue; // присвоение ссылки на очередь задач
-        int rc = pthread_create(&thr[i], NULL, thr_func, &t[i]); // создание потоков
+        rc = pthread_create(&thr[i], NULL, thr_func, &t[i]); // создание потоков
 
         // Проверяем, что потоки успешно созданы 
         if (rc)
@@ -56,6 +62,14 @@ int main()
     for (int i = 0; i < MAX_TASKS; i++)
         summ += queue.tasks[i].summ;
     printf("integral sin(1/x) from %le to %le = %le\n", start, end, summ);
+
+    // Уничтожение мьютекса
+    rc = pthread_mutex_destroy(&queue.lock);
+    if (rc)
+    {
+        fprintf(stderr, "error:mutex_destroy, rc:%d\n", rc);
+        return EXIT_FAILURE;
+    }
 
     return 0;
 }
