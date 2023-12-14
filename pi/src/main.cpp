@@ -1,7 +1,7 @@
 #include "main.h"
 
 int main() {
-    int radius = 100000;
+    int radius = 10000000;
 
     double p;
     double start, end;
@@ -12,11 +12,13 @@ int main() {
 
     printf("Pi by one thread: %.10f (%.6f s)\n", p, end - start);
 
-    start = clock();
-    p = multi_pi(radius);
-    end = clock();
+    for (int i = 2; i < NUM_TREADS; i++){
+        start = clock();
+        p = multi_pi(radius, NUM_TREADS);
+        end = clock();
 
-    printf("Pi by multi threads: %.10f (%.6f s)\n", p, end - start);
+        printf("Pi by %d threads: %.10f (%.6f s)\n", i, p, end - start);
+    }
 
     return 0;
 }

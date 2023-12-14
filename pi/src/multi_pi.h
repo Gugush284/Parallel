@@ -1,1 +1,1 @@
-double multi_pi(int radius);
+double multi_pi(int n, int num_thr);
