@@ -1,13 +1,13 @@
 cmake_minimum_required (VERSION 3.0)
 
-project (pi)
+project (PI)
 
 set(SOURCE_EXE src/main.cpp)
 
-set(SOURCE_LIB src/pi.cpp)			
+set(SOURCE_LIB src/pi.cpp src/multi_pi.cpp)			
 
-add_library(pi STATIC ${SOURCE_LIB})	
+add_library(libpi STATIC ${SOURCE_LIB})	
 
-add_executable(main ${SOURCE_EXE})	
+add_executable(pi ${SOURCE_EXE})	
 
-target_link_libraries(main pi)
+target_link_libraries(pi libpi)

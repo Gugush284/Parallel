@@ -13,4 +13,4 @@ WORKDIR /build/bin
 
 RUN cmake /build/source
 RUN make
-RUN main
+RUN ./pi
