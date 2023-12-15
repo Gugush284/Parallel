@@ -1,1 +1,1 @@
-double multi_pi(int n, int num_thr);
+double multi_pi(int n, int num_thr, double * time);

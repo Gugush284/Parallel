@@ -1,3 +1,1 @@
-double pi(int radius);
-
-double circle(double, double);
+double pi(int radius, double * time);

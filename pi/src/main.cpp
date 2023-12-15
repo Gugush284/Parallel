@@ -1,24 +1,21 @@
 #include "main.h"
 
 int main() {
-    int radius = 10000000;
+    int radius = 10000;
 
     double p;
-    double start, end;
+    double time = 0;
 
-    start = clock();
-    p = pi(radius);
-    end = clock();
+    p = pi(radius, & time);
 
-    printf("Pi by one thread: %.10f (%.6f s)\n", p, end - start);
+    printf("Pi by one thread: %.10f (%.6f s)\n", p, time);
 
-    for (int i = 2; i < NUM_TREADS; i++){
-        start = clock();
-        p = multi_pi(radius, NUM_TREADS);
-        end = clock();
+    time = 0;
+        
+    p = multi_pi(radius, NUM_TREADS, & time);
 
-        printf("Pi by %d threads: %.10f (%.6f s)\n", i, p, end - start);
-    }
+    printf("Pi by %d threads: %.10f (%.6f s)\n", NUM_TREADS, p, time);
+   
 
     return 0;
 }

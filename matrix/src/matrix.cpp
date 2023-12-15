@@ -25,12 +25,15 @@ void matrix_print(double ** matrix, int size){
     }
 }
 
-double ** matrix_multiplication_single(double ** A, double ** B, int size){
+double ** matrix_multiplication_single(double ** A, double ** B, int size, double * time){
+    double start, end;
+
     double ** matrix = (double **) malloc(sizeof(double *) * size);
 
     for (int i = 0; i < size; i++)
         matrix[i] = (double *) malloc(sizeof(double) * size);
 
+    start = clock();
     for(int i = 0; i < size; i++) {
         for(int j = 0; j < size; j++) {
             matrix[i][j] = 0;
@@ -40,16 +43,23 @@ double ** matrix_multiplication_single(double ** A, double ** B, int size){
             }
         }
     }
+    end = clock();
+
+    if (time != NULL)
+        * time = (end - start) / CLOCKS_PER_SEC;
 
     return matrix;
 }
 
-double ** matrix_multiplication_multi(double ** A, double ** B, int size, int num_thr){
+double ** matrix_multiplication_multi(double ** A, double ** B, int size, int num_thr, double * time){
+    double start, end;
+
     double ** matrix = (double **) malloc(sizeof(double *) * size);
 
     for (int i = 0; i < size; i++)
         matrix[i] = (double *) malloc(sizeof(double) * size);
 
+    start = clock();
     #pragma omp parallel num_threads(num_thr)
     #pragma omp parallel for shared(matrix1, matrix2, result) private(i, j, k)
     for(int i = 0; i < size; i++) {
@@ -61,6 +71,10 @@ double ** matrix_multiplication_multi(double ** A, double ** B, int size, int nu
             }
         }
     }
+    end = clock();
+
+    if (time != NULL)
+        * time = (end - start) / CLOCKS_PER_SEC;
     
     return matrix;
 }
