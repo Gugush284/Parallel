@@ -1,1 +1,1 @@
-double pi(int radius, double * time);
+double pi(int radius);

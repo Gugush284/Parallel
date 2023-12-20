@@ -3,19 +3,17 @@
 int main() {
     int radius = 10000;
 
-    double p;
-    double time = 0;
+    double p_single, p_multi;
 
-    p = pi(radius, & time);
+    p_single = pi(radius);
 
-    printf("Pi by one thread: %.10f (%.6f s)\n", p, time);
+    printf("Pi by one thread: %.10f\n", p_single);
 
-    time = 0;
-        
-    p = multi_pi(radius, NUM_TREADS, & time);
+    p_multi = multi_pi(radius, NUM_TREADS);
 
-    printf("Pi by %d threads: %.10f (%.6f s)\n", NUM_TREADS, p, time);
+    printf("Pi by %d threads: %.10f\n", NUM_TREADS, p_multi);
+
+    printf("%.15f\n", p_multi - p_single);
    
-
     return 0;
 }
